@@ -19,6 +19,7 @@ from tobrot import (
     EDIT_SLEEP_TIME_OUT,
     LOGGER,
     MAX_TIME_TO_WAIT_FOR_TORRENTS_TO_START,
+    MAX_CONCURRENT_DOWNLOADS,
 )
 from tobrot.helper_funcs.create_compressed_archive import (
     create_archive,
