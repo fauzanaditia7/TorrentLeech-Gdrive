@@ -75,12 +75,12 @@ class Progress:
 
             progress = "[{0}{1}] \nP: {2}%\n".format(
                 "".join(
-                    [FINISHED_PROGRESS_STR for i in range(math.floor(percentage / 5))]
+                    [FINISHED_PROGRESS_STR for i in range(math.floor(percentage / 10))]
                 ),
                 "".join(
                     [
                         UN_FINISHED_PROGRESS_STR
-                        for i in range(20 - math.floor(percentage / 5))
+                        for i in range(10 - math.floor(percentage / 10))
                     ]
                 ),
                 round(percentage, 2),

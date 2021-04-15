@@ -89,6 +89,22 @@ async def aria_start():
     aria2_daemon_start_cmd.append(
         f"--bt-stop-timeout={MAX_TIME_TO_WAIT_FOR_TORRENTS_TO_START}"
     )
+    aria2_daemon_start_cmd.append("--bt-max-peers=0")
+    aria2_daemon_start_cmd.append(f"--bt-tracker={sonstringtrckr}")
+    aria2_daemon_start_cmd.append("--check-certificate=false")
+    aria2_daemon_start_cmd.append("--peer-id-prefix=-qB4220-")
+    aria2_daemon_start_cmd.append("--user-agent=qBittorrent/4.2.2")
+    aria2_daemon_start_cmd.append("--bt-enable-lpd=true")
+    aria2_daemon_start_cmd.append("--continue=true")
+    aria2_daemon_start_cmd.append("--max-file-not-found=5")
+    aria2_daemon_start_cmd.append("--max-tries=5")
+    aria2_daemon_start_cmd.append("--retry-wait=5")
+    aria2_daemon_start_cmd.append("--auto-file-renaming=true")
+    aria2_daemon_start_cmd.append("--reuse-uri=true")
+    aria2_daemon_start_cmd.append("--http-accept-gzip=true")
+    aria2_daemon_start_cmd.append("--referer=*")
+    aria2_daemon_start_cmd.append("--content-disposition-default-utf8=true")
+    aria2_daemon_start_cmd.append(f"--max-concurrent-downloads={MAX_CONCURRENT_DOWNLOADS}")
     #
     LOGGER.info(aria2_daemon_start_cmd)
     #
