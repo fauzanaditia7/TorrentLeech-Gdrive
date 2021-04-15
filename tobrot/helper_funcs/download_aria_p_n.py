@@ -7,7 +7,7 @@ import logging
 import os
 import sys
 import time
-
+import requests
 import aria2p
 from pyrogram.errors import FloodWait, MessageNotModified
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
@@ -27,9 +27,45 @@ from tobrot.helper_funcs.create_compressed_archive import (
 )
 from tobrot.helper_funcs.extract_link_from_message import extract_link
 from tobrot.helper_funcs.upload_to_tg import upload_to_gdrive, upload_to_tg
+from tobrot.helper_funcs.direct_link_generator import direct_link_generator
+from tobrot.helper_funcs.exceptions import DirectDownloadLinkException
 
+def KopyasizListe(string):
+    kopyasiz = list(string.split(","))
+    kopyasiz = list(dict.fromkeys(kopyasiz))
+    return kopyasiz
+
+def Virgullustring(string):
+    string = string.replace("\n\n",",")
+    string = string.replace("\n",",")
+    string = string.replace(",,",",")
+    string = string.rstrip(',')
+    string = string.lstrip(',')
+    return string
+
+tracker_urlsss = [
+    "https://raw.githubusercontent.com/XIU2/TrackersListCollection/master/all.txt",
+    "https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_all.txt",
+    "https://raw.githubusercontent.com/DeSireFire/animeTrackerList/master/AT_all.txt"
+    ]
+tumtorrenttrackerstringi = ""
+sonstringtrckr = ""
+for i in range(len(tracker_urlsss)):
+    response = requests.get(tracker_urlsss[i])
+    response.encoding = "utf-8"
+    tumtorrenttrackerstringi += "\n"
+    tumtorrenttrackerstringi += response.text
+trackerlistemiz = KopyasizListe(Virgullustring(tumtorrenttrackerstringi))
+sonstringtrckr = ','.join(trackerlistemiz)
+# LOGGER.info(sonstringtrckr)
+# trackelreri alıyoz dinamik olarak
 sys.setrecursionlimit(10 ** 4)
-
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logging.getLogger("pyrogram").setLevel(logging.WARNING)
+LOGGER = logging.getLogger(__name__)
 
 async def aria_start():
     aria2_daemon_start_cmd = []
@@ -120,7 +156,19 @@ def add_url(aria_instance, text_url, c_file_name):
     #     options = {
     #         "dir": c_file_name
     #     }
-    uris = [text_url]
+    if "zippyshare.com" in text_url \
+        or "osdn.net" in text_url \
+        or "mediafire.com" in text_url \
+        or "cloud.mail.ru" in text_url \
+        or "github.com" in text_url \
+        or "yadi.sk" in text_url:
+            try:
+                urisitring = direct_link_generator(text_url)
+                uris = [urisitring]
+            except DirectDownloadLinkException as e:
+                LOGGER.info(f'{text_url}: {e}')
+    else:
+         uris = [text_url]
     # Add URL Into Queue
     try:
         download = aria_instance.add_uris(uris, options=options)
